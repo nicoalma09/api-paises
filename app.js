@@ -1,27 +1,24 @@
 const prompt = require('prompt-sync')();
+const fetch = require('node-fetch');
 
-const datosPaises = {
-  argentina: { nombre: "Argentina", capital: "Buenos Aires", region: "América del Sur" },
-  japon: { nombre: "Japón", capital: "Tokio", region: "Asia" },
-  brasil: { nombre: "Brasil", capital: "Brasilia", region: "América del Sur" }
-};
+const entrada = prompt('🔎 Ingresá un país: ');
 
-function buscarPais(nombre) {
-  const pais = datosPaises[nombre.toLowerCase()];
-  if (pais) {
+fetch(`https://restcountries.com/v3.1/name/${entrada}`)
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error('No se encontró el país');
+    }
+    return response.json();
+  })
+  .then((data) => {
+    const pais = data[0];
     console.log('\n🌍 Información del país:');
-    console.log(`- Nombre: ${pais.nombre}`);
-    console.log(`- Capital: ${pais.capital}`);
+    console.log(`- Nombre: ${pais.name.common}`);
+    console.log(`- Capital: ${pais.capital ? pais.capital[0] : 'No tiene'}`);
     console.log(`- Región: ${pais.region}\n`);
-  } else {
-    console.log('\n❌ País no encontrado\n');
-  }
-}
-
-while (true) {
-  const entrada = prompt('🔎 Ingresá un país (o escribí "salir"): ');
-  if (entrada.toLowerCase() === 'salir') break;
-  buscarPais(entrada);
-}
+  })
+  .catch((error) => {
+    console.log(`\n❌ Error: ${error.message}\n`);
+  });
 
 
