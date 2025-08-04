@@ -24,5 +24,4 @@ while (true) {
   buscarPais(entrada);
 }
 
-console.log('👋 Aplicación finalizada.');
 
